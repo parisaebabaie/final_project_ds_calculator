@@ -50,15 +50,3 @@ public:
         return ret;
     }
 };
-
-int main()
-{
-    stack st;
-    for (char i = 'a'; i < 'f'; i++)
-        st.insert(i);
-
-    for (int i = 0; i < 3; i++)
-        cout << st.pop();
-
-    return 0;
-}
