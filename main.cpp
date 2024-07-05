@@ -2,6 +2,7 @@
 #include <string>
 #include <stack>
 #include <vector>
+#include <math.h>
 using namespace std;
 
 int operator_priority(char op)
@@ -42,7 +43,10 @@ vector<string> postfix(string infix)
 
         string temp;
         if (*i == '-' && i == infix.begin())
-            temp.push_back(*(i++));
+        {
+            temp.push_back(*i);
+            continue;
+        }
 
         bool num_flag = false;
         while (*i >= '0' && *i <= '9')
@@ -94,6 +98,11 @@ vector<string> postfix(string infix)
             st.push(*i);
         }
     }
+    if (!valid)
+    {
+        res.clear();
+        return res;
+    }
     while (!st.empty())
     {
         string temp;
@@ -105,8 +114,47 @@ vector<string> postfix(string infix)
     return res;
 }
 
+int evaluate(vector<string>::iterator it, vector<string>::iterator end)
+{
+    stack<int> nums;
+    for (auto i = it; i < end; i++)
+    {
+        if ((*i).size() > 1 || isdigit((*i)[0]))
+            nums.push(stoi(*i));
+
+        else
+        {
+
+            int val1 = nums.top();
+            nums.pop();
+            int val2 = nums.top();
+            nums.pop();
+            switch ((*i)[0])
+            {
+            case '^':
+                nums.push(pow(val2, val1));
+                break;
+            case '+':
+                nums.push(val2 + val1);
+                break;
+            case '-':
+                nums.push(val2 - val1);
+                break;
+            case '*':
+                nums.push(val2 * val1);
+                break;
+            case '/':
+                nums.push(val2 / val1);
+                break;
+            }
+        }
+    }
+    return nums.top();
+}
+
 int main(void)
 {
-    string input = "3*1+5-9";
-    auto pf = postfix(input);
+    string input = "-(((1+2) * (-3))^(1 + 1))";
+    vector<string> v = postfix(input);
+    cout << evaluate(v.begin(), v.end()) << endl;
 }
