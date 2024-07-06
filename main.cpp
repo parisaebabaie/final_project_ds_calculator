@@ -42,10 +42,9 @@ vector<string> postfix(string infix)
             continue;
 
         string temp;
-        if (*i == '-' && i == infix.begin())
+        if (*i == '-' && (i == infix.begin() || st.top() == '('))
         {
-            temp.push_back(*i);
-            continue;
+            res.push_back("0");
         }
 
         bool num_flag = false;
@@ -114,7 +113,12 @@ vector<string> postfix(string infix)
     return res;
 }
 
-int evaluate(vector<string>::iterator it, vector<string>::iterator end)
+void error_dis()
+{
+    cout << "Error!" << endl;
+}
+
+void evaluate(vector<string>::iterator it, vector<string>::iterator end)
 {
     stack<int> nums;
     for (auto i = it; i < end; i++)
@@ -124,11 +128,23 @@ int evaluate(vector<string>::iterator it, vector<string>::iterator end)
 
         else
         {
+            if (nums.empty())
+            {
+                error_dis();
+                return;
+            }
 
             int val1 = nums.top();
             nums.pop();
+
+            if (nums.empty())
+            {
+                error_dis();
+                return;
+            }
             int val2 = nums.top();
             nums.pop();
+
             switch ((*i)[0])
             {
             case '^':
@@ -149,12 +165,17 @@ int evaluate(vector<string>::iterator it, vector<string>::iterator end)
             }
         }
     }
-    return nums.top();
+    cout << nums.top() << endl;
 }
 
 int main(void)
 {
-    string input = "-(((1+2) * (-3))^(1 + 1))";
+    string input;
+    cout << "Enter the infix expression: ";
+    cin >> input;
     vector<string> v = postfix(input);
-    cout << evaluate(v.begin(), v.end()) << endl;
+    if (v.empty())
+        error_dis();
+    else
+        evaluate(v.begin(), v.end());
 }
