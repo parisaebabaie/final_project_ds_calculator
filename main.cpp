@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
-#include <stack>
 #include <vector>
 #include <math.h>
+#include "stack.h"
+
 using namespace std;
 
 int operator_priority(char op)
@@ -28,12 +29,12 @@ char associativity(char c)
 {
     if (c == '^')
         return 'R';
-    return 'L';
+    return 'L'; 
 }
 vector<string> postfix(string infix)
 {
-    stack<char> st;
-    stack<char> paran;
+    MyStack<char> st;
+    MyStack<char> paran;
     vector<string> res;
     bool valid = true;
     for (auto i = infix.begin(); i < infix.end(); i++)
@@ -120,7 +121,7 @@ void error_dis()
 
 void evaluate(vector<string>::iterator it, vector<string>::iterator end)
 {
-    stack<int> nums;
+    MyStack<int> nums;
     for (auto i = it; i < end; i++)
     {
         if ((*i).size() > 1 || isdigit((*i)[0]))
