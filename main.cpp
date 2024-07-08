@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <iomanip>
 #include "stack.h"
-
 using namespace std;
 
 int operator_priority(char op)
@@ -29,7 +29,7 @@ char associativity(char c)
 {
     if (c == '^')
         return 'R';
-    return 'L'; 
+    return 'L';
 }
 vector<string> postfix(string infix)
 {
@@ -121,11 +121,11 @@ void error_dis()
 
 void evaluate(vector<string>::iterator it, vector<string>::iterator end)
 {
-    MyStack<int> nums;
+    MyStack<double> nums;
     for (auto i = it; i < end; i++)
     {
         if ((*i).size() > 1 || isdigit((*i)[0]))
-            nums.push(stoi(*i));
+            nums.push(stod(*i));
 
         else
         {
@@ -135,7 +135,7 @@ void evaluate(vector<string>::iterator it, vector<string>::iterator end)
                 return;
             }
 
-            int val1 = nums.top();
+            double val1 = nums.top();
             nums.pop();
 
             if (nums.empty())
@@ -143,7 +143,7 @@ void evaluate(vector<string>::iterator it, vector<string>::iterator end)
                 error_dis();
                 return;
             }
-            int val2 = nums.top();
+            double val2 = nums.top();
             nums.pop();
 
             switch ((*i)[0])
@@ -161,19 +161,24 @@ void evaluate(vector<string>::iterator it, vector<string>::iterator end)
                 nums.push(val2 * val1);
                 break;
             case '/':
+                if (val1 == 0)
+                {
+                    error_dis();
+                    return;
+                }
                 nums.push(val2 / val1);
                 break;
             }
         }
     }
-    cout << nums.top() << endl;
+    cout << setprecision(5 + int(nums.top() / 10)) << nums.top() << endl;
 }
 
 int main(void)
 {
     string input;
     cout << "Enter the infix expression: ";
-    cin >> input;
+    getline(cin, input);
     vector<string> v = postfix(input);
     if (v.empty())
         error_dis();
